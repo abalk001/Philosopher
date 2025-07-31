@@ -6,7 +6,9 @@ CFLAGS = -Wall -Wextra -Werror -pthread -I.
 SRCS = dinner.c handle_stuff.c init.c monitoring.c parsing.c philo_tools.c set_stuff.c syn_utils.c time.c utils.c
 OBJS = $(SRCS:.c=.o)
 
-all: $(NAME)
+# all: $(NAME)
+all: 
+	gcc -pthread *.c -o philo
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)

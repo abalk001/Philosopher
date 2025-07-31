@@ -17,10 +17,6 @@ void	*long_philo(void *data)
 	return (NULL);
 }
 
-
-
-
-
 // 0) If no meals return ->0
 // 1 ) if onlu one philo -> ad hoc
 // 2/ Create all threads, all philos
@@ -28,13 +24,22 @@ void	*long_philo(void *data)
 // 3) Sync the beggining simulation ( all start in the same time )
 static void	thinking(t_philo *philo)
 {
+	//precise_unsleep((philo->table->t_eat * 0.5) - philo->table->t_sleep, philo->table);
 	monitoring(THINKING,philo);
 }
 static void	eat(t_philo *philo)
 {
-	safe_mutex_handle(&philo->first_fork->fork, LOCK);
+	if (philo->id < (philo->id + 1) % philo->table->philo_nbr)
+	{
+		safe_mutex_handle(&philo->first_fork->fork, LOCK);
+		safe_mutex_handle(&philo->second_fork->fork, LOCK);
+	}
+	else
+	{
+		safe_mutex_handle(&philo->second_fork->fork, LOCK);
+		safe_mutex_handle(&philo->first_fork->fork, LOCK);
+	}
 	monitoring(TAKE_FIRST_FORK, philo);
-	safe_mutex_handle(&philo->second_fork->fork, LOCK);
 	monitoring(TAKE_SECOND_FORK, philo);
 	set_long(&philo->philo_mutex, &philo->last_meal_time, get_time(MS));
 	philo->meals_counters++;
@@ -42,6 +47,7 @@ static void	eat(t_philo *philo)
 	precise_unsleep(philo->table->t_eat, philo->table);
 	if (philo->table->m_meals > 0 && philo->meals_counters == philo->table->m_meals)
 		set_bool(&philo->philo_mutex, &philo->full, true);
+	//printf("the %d ate %ld times\n", philo->id, philo->meals_counters); 
 	safe_mutex_handle(&philo->first_fork->fork, UNLOCK);
 	safe_mutex_handle(&philo->second_fork->fork, UNLOCK);
 }
@@ -50,9 +56,9 @@ void	*dinner_simulation(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	wait_all_threads(philo->table);
-	set_long(&philo->philo_mutex, &philo->last_meal_time, get_time(MS));
-	increase_long(&philo->table->table_mutex, &philo->table->threads_running_nbr);
+	wait_all_threads(philo->table); // spinlock till all the philo are ready 
+	set_long(&philo->philo_mutex, &philo->last_meal_time, get_time(MS)); // calculate the last time he ate
+	increase_long(&philo->table->table_mutex, &philo->table->threads_running_nbr); // get the nb of threads running 
 	while(!sim_finish(philo->table))
 	{
 		if (philo->full) // recheck this
@@ -71,7 +77,7 @@ void dinner_start(t_table *table)
 
 	i = -1;
 	if (0 == table->m_meals)
-		return;
+		return; // PERFECT !!!!!!!!!
 	else if (1 == table->philo_nbr)
 		safe_thread_handle(&table->philos[0].thread_id, long_philo, &table->philos[0], CREATE);
 	else

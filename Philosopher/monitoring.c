@@ -8,7 +8,7 @@ static bool	philo_died(t_philo *philo)
 	if (get_bool(&philo->philo_mutex, &philo->full))
 		return (false);
 	elapsed = get_time(MS) - get_long(&philo->philo_mutex, &philo->last_meal_time);
-	t_die = philo->table->t_die / 1e3; // convert here
+	t_die = philo->table->t_die; // convert here
 
 	if(elapsed > t_die)
 		return (true);

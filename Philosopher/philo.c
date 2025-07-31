@@ -8,11 +8,10 @@ int main(int ac, char **av)
 	{
 		parse_input(&table, av); 
 		data_init(&table);
-		dinner_start(&table); // Still
-
-		//4) No leaks -> all philos are full or 1 philo is dead
+		dinner_start(&table);
+		printf("start cleaning\nn");
 		clean(&table);
-		printf("heresup\n");
+		printf("Done\n");
 	}
 	else
 		error_exit("Wrong input\n");

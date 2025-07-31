@@ -1,9 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   syn_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abalk <abalk@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/31 16:30:21 by abalk             #+#    #+#             */
+/*   Updated: 2025/07/31 16:30:29 by abalk            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
-
-
 void	wait_all_threads(t_table *table)
 {
-	while(!get_bool(&table->table_mutex,&table->all_threads_ready))
+	while(!get_bool(&table->table_mutex, &table->all_threads_ready))
 	;
 }
 

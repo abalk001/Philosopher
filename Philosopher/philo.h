@@ -56,30 +56,30 @@ typedef struct s_fork
 typedef struct s_philo
 {
 	int			id;
-	long		meals_counters;
-	bool		full;
+	long		meals_counters; // init in philo-init at 0
+	bool		full; // init in philo-init
 	long		last_meal_time;  // time passed from last meal
 	t_fork		*first_fork;
 	t_fork		*second_fork; 
 	pthread_t	thread_id; // a philo is a thread to societyyyy 
-	t_mtx		philo_mutex; // use for moni
+	t_mtx		philo_mutex; // use for monitoring and init in philo-init
 	t_table		*table;
 }	t_philo;
 
 
 struct s_table   //shared data
 {
-	long	philo_nbr;
-	long	t_die;
-	long	t_eat;
-	long	t_sleep;
-	long	m_meals;// [4] Flag if -1 
+	long	philo_nbr;  // init in parsing
+	long	t_die; // init in parsing 
+	long	t_eat; // init in parsing
+	long	t_sleep; // init in sleep
+	long	m_meals;// [4] Flag if -1 , init in parsing
 	long	str_sim;
-	bool	end_sim; // when a philo die or when all philo are full
-	bool	all_threads_ready; //sych philos
+	bool	end_sim; // init in data-init
+	bool	all_threads_ready; //sych philos init at fals in data-init
 	long	threads_running_nbr;
-	t_mtx	table_mutex;
-	t_mtx	write_mutex;
+	t_mtx	table_mutex; // init in data init
+	t_mtx	write_mutex; // init in data init 
 	pthread_t monitor_thread;
 	t_fork	*fork; // array to forks 
 	t_philo	*philos;
@@ -106,7 +106,7 @@ void	*dinner_simulation(void *data);
 void	wait_all_threads(t_table *table);
 /* time */
 long	get_time(t_time_code time_code);
-void	precise_unsleep(long usec, t_table *table);
+void	precise_unsleep(long t_to_task, t_table *table);
 /* monitoring */
 void	monitoring(t_philo_status status, t_philo *philo);
 bool	all_threads_running(t_mtx *mtx, long *threads, long philo_nbr);
