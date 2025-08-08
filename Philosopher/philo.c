@@ -1,17 +1,56 @@
-#include "philo.h"
-//./ philo 5 800 200 200 [5]
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abalk <abalk@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/08 15:21:57 by abalk             #+#    #+#             */
+/*   Updated: 2025/08/08 17:43:24 by abalk            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int main(int ac, char **av)
+#include "philo.h"
+
+static int	valid_input(const char *str)
 {
-	t_table  table;
-	if(5 == ac || 6 == ac)
+	int	len;
+
+	len = 0;
+	while (is_space(*str))
+		++str;
+	if (*str == '+')
+		++str;
+	else if (*str == '-')
+		return (error_exit("check input"));
+	if (!is_digit(*str))
+		return (error_exit("check input"));
+	while (is_digit(*str++))
+		++len;
+	if (len > 10)
+		return (error_exit("check input"));
+	return (0);
+}
+
+int	main(int ac, char **av)
+{
+	int		i;
+	t_table	table;
+
+	i = 0;
+	if (5 == ac || 6 == ac)
 	{
-		parse_input(&table, av); 
-		data_init(&table);
-		dinner_start(&table);
-		printf("start cleaning\nn");
+		while (++i < ac)
+		{
+			if (valid_input(av[i]))
+				return (1);
+		}
+		parse_input(&table, av);
+		if (data_init(&table))
+			return (1);
+		if (dinner_start(&table))
+			return (1);
 		clean(&table);
-		printf("Done\n");
 	}
 	else
 		error_exit("Wrong input\n");

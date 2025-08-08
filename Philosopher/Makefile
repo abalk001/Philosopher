@@ -1,20 +1,32 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: abalk <abalk@student.42.fr>                +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/08/08 20:33:17 by abalk             #+#    #+#              #
+#    Updated: 2025/08/08 20:33:30 by abalk            ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread -I.
+CFLAGS = -Wall -Wextra -Werror -pthread
 
-SRCS = dinner.c handle_stuff.c init.c monitoring.c parsing.c philo_tools.c set_stuff.c syn_utils.c time.c utils.c
+SRCS = bools_sim.c cleaning.c dinner.c init.c monitoring.c parsing.c \
+		philo.c syn_utils.c thr_mtx_handle.c time.c utils.c
 OBJS = $(SRCS:.c=.o)
 
-# all: $(NAME)
-all: 
-	gcc -pthread *.c -o philo
+all: $(NAME)
+
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 %.o: %.c philo.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)
